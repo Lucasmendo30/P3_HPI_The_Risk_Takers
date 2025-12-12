@@ -2,12 +2,15 @@ package es.ulpgc.hpi.p3.projectimplementation;
 
 import java.util.Random;
 
+/**
+ * Represents a linear regression model that analyzes the relationship between two variables.
+ * It simulates the calculation of the slope, intercept, and R2 metrics.
+ */
 public class LinearRegression extends RegressionAnalysis {
 
     private String independentVariable;
     private double slope;
     private double intercept;
-
 
     public LinearRegression(Database database, AnalysisTopic theme, String dependentVariable, String independentVariable) {
         super(database, theme, dependentVariable);
@@ -20,25 +23,39 @@ public class LinearRegression extends RegressionAnalysis {
         long startTime = System.currentTimeMillis();
 
         try {
-            Thread.sleep(1000);
-            Random rand = new Random();
-
-            this.slope = 1.5 + rand.nextDouble();
-            this.intercept = 10 + rand.nextDouble();
-            this.rSquared = 0.85;
-
+            executeSimulation();
+            long endTime = System.currentTimeMillis();
+            finalizeSuccess(startTime, endTime);
         } catch (InterruptedException e) {
-            setStatus(AnalysisStatus.Failed);
-            return;
+            handleFailure();
         }
+    }
 
-        long endTime = System.currentTimeMillis();
+    private void executeSimulation() throws InterruptedException {
+        Thread.sleep(1000);
+        calculateRegressionMetrics();
+    }
 
-        String summary = String.format("Linear Model: %s = %.2f * %s + %.2f",
-                dependentVariable, slope, independentVariable, intercept);
+    private void calculateRegressionMetrics() {
+        Random rand = new Random();
+        this.slope = 1.5 + rand.nextDouble();
+        this.intercept = 10 + rand.nextDouble();
+        this.rSquared = 0.85;
+    }
 
+    private void finalizeSuccess(long startTime, long endTime) {
+        String summary = generateEquationSummary();
         setResultSummary(summary);
         setExecutionTime((double) (endTime - startTime));
         setStatus(AnalysisStatus.Completed);
+    }
+
+    private String generateEquationSummary() {
+        return String.format("Linear Model: %s = %.2f * %s + %.2f",
+                dependentVariable, slope, independentVariable, intercept);
+    }
+
+    private void handleFailure() {
+        setStatus(AnalysisStatus.Failed);
     }
 }

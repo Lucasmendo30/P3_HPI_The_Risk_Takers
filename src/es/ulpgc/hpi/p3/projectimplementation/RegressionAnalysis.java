@@ -1,9 +1,12 @@
 package es.ulpgc.hpi.p3.projectimplementation;
 
+/**
+ * Abstract base class for regression analysis models.
+ * It manages the dependent variable target and the R-squared accuracy metric.
+ */
 public abstract class RegressionAnalysis extends Analysis {
 
     protected String dependentVariable;
-
     protected double rSquared;
 
     public RegressionAnalysis(Database database, AnalysisTopic theme, String dependentVariable) {
@@ -17,12 +20,15 @@ public abstract class RegressionAnalysis extends Analysis {
         super.showResults();
 
         if (getStatus() == AnalysisStatus.Completed) {
-            System.out.println("--- General Regression Results ---");
-            System.out.println("Target Variable (Y): " + dependentVariable);
-            System.out.printf("Model Accuracy (R^2): %.4f\n", rSquared);
+            printRegressionDetails();
         }
     }
 
+    private void printRegressionDetails() {
+        System.out.println("--- General Regression Results ---");
+        System.out.println("Target Variable (Y): " + dependentVariable);
+        System.out.printf("Model Accuracy (R^2): %.4f\n", rSquared);
+    }
 
     public String getDependentVariable() {
         return dependentVariable;

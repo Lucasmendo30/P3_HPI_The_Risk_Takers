@@ -2,6 +2,10 @@ package es.ulpgc.hpi.p3.projectimplementation;
 
 import java.util.Random;
 
+/**
+ * Represents a clustering analysis using a specific algorithm and K value.
+ * It simulates the process of grouping data and tracks the iterations required for the analysis.
+ */
 public class ClusterAnalysis extends Analysis {
 
     private int kValue;
@@ -20,48 +24,58 @@ public class ClusterAnalysis extends Analysis {
         setStatus(AnalysisStatus.Running);
         long startTime = System.currentTimeMillis();
 
-        System.out.println("--- Starting " + algorithm + " Clustering with K=" + kValue + " ---");
+        printStartMessage();
 
-        // Simulación de cálculo
         try {
-            // Simulamos que tarda entre 1 y 2 segundos en procesar
-            Thread.sleep(1500);
-
-            // Simulamos cálculo de iteraciones
-            this.iterations = new Random().nextInt(50) + 10;
-
+            executeSimulation();
+            long endTime = System.currentTimeMillis();
+            finalizeSuccess(startTime, endTime);
         } catch (InterruptedException e) {
-            setStatus(AnalysisStatus.Failed);
-            setResultSummary("Analysis interrupted due to error.");
-            return;
+            handleFailure();
         }
+    }
 
-        long endTime = System.currentTimeMillis();
+    private void printStartMessage() {
+        System.out.println("--- Starting " + algorithm + " Clustering with K=" + kValue + " ---");
+    }
 
-        // Generamos un resumen de resultados
-        String summary = "Successfully created " + kValue + " clusters using " + algorithm + ". " +
-                "Converged in " + iterations + " iterations. " +
-                "Main groups identified: High Value, Loyal, Risk.";
+    private void executeSimulation() throws InterruptedException {
+        Thread.sleep(1500);
+        this.iterations = new Random().nextInt(50) + 10;
+    }
 
-        // Guardamos los resultados en la clase Padre usando los setters protected
+    private void finalizeSuccess(long startTime, long endTime) {
+        String summary = generateSummary();
         setExecutionTime((double) (endTime - startTime));
         setResultSummary(summary);
         setStatus(AnalysisStatus.Completed);
     }
 
+    private String generateSummary() {
+        return "Successfully created " + kValue + " clusters using " + algorithm + ". " +
+                "Converged in " + iterations + " iterations. ";
+    }
+
+    private void handleFailure() {
+        setStatus(AnalysisStatus.Failed);
+        setResultSummary("Analysis interrupted due to error.");
+    }
+
     @Override
     public void showResults() {
-        // Primero muestra la info básica del padre (ID, Status, Time)
         super.showResults();
 
-        // Si terminó, mostramos los detalles exclusivos de Cluster
         if (getStatus() == AnalysisStatus.Completed) {
-            System.out.println("--- Cluster Specific Details ---");
-            System.out.println("Algorithm Used: " + this.algorithm);
-            System.out.println("Clusters (K): " + this.kValue);
-            System.out.println("Total Iterations: " + this.iterations);
-            System.out.println("--------------------------------");
+            printClusterDetails();
         }
+    }
+
+    private void printClusterDetails() {
+        System.out.println("--- Cluster Specific Details ---");
+        System.out.println("Algorithm Used: " + this.algorithm);
+        System.out.println("Clusters (K): " + this.kValue);
+        System.out.println("Total Iterations: " + this.iterations);
+        System.out.println("--------------------------------");
     }
 
     public int getkValue() {
@@ -80,3 +94,4 @@ public class ClusterAnalysis extends Analysis {
         this.algorithm = algorithm;
     }
 }
+

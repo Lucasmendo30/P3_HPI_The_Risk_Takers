@@ -1,63 +1,32 @@
 package es.ulpgc.hpi.p3.projectimplementation;
 
+/**
+ * Abstract base class for data analysis tasks.
+ * It manages the analysis unique ID, status,
+ * execution results, and the associated database.
+ */
 public abstract class Analysis {
+
     private static int ID = 0;
+
     private final int id;
+    private final Database database;
+    private final AnalysisTopic theme;
+
+    private AnalysisStatus status;
     private String resultSummary;
     private Double executionTime;
-    // Relaciones con enumeraciones y database
-    private AnalysisTopic theme;
-    private AnalysisStatus status;
-    private Database database;
 
     public Analysis(Database database, AnalysisTopic theme) {
+        this.id = ++ID;
         this.database = database;
         this.theme = theme;
-
-        // Inicializamos valores internos automáticamente
         this.status = AnalysisStatus.Pending;
-        this.id = ++ID;
-
-        // Valores por defecto para resultados (se llenarán al ejecutar runAnalysis)
         this.resultSummary = "Analysis not executed yet";
         this.executionTime = 0.0;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getResultSummary() {
-        return resultSummary;
-    }
-
-    public Double getExecutionTime() {
-        return executionTime;
-    }
-
-    public AnalysisStatus getStatus() {
-        return status;
-    }
-
-    public AnalysisTopic getTheme() {
-        return theme;
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
-    protected void setResultSummary(String resultSummary) {
-        this.resultSummary = resultSummary;
-    }
-
-    protected void setExecutionTime(Double executionTime) {
-        this.executionTime = executionTime;
-    }
-
-    public void setStatus(AnalysisStatus status) {
-        this.status = status;
-    }
+    public abstract void runAnalysis();
 
     public void showResults() {
         System.out.println("====== ANALYSIS REPORT ID: " + this.id + " ======");
@@ -70,9 +39,43 @@ public abstract class Analysis {
         } else {
             System.out.println("Results are not available yet (Analysis not completed).");
         }
+
         System.out.println("==========================================");
     }
 
-    public abstract void runAnalysis();
-}
+    public int getId() {
+        return id;
+    }
 
+    public Database getDatabase() {
+        return database;
+    }
+
+    public AnalysisTopic getTheme() {
+        return theme;
+    }
+
+    public AnalysisStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AnalysisStatus status) {
+        this.status = status;
+    }
+
+    public String getResultSummary() {
+        return resultSummary;
+    }
+
+    protected void setResultSummary(String resultSummary) {
+        this.resultSummary = resultSummary;
+    }
+
+    public Double getExecutionTime() {
+        return executionTime;
+    }
+
+    protected void setExecutionTime(Double executionTime) {
+        this.executionTime = executionTime;
+    }
+}
